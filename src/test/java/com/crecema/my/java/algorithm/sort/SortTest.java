@@ -29,6 +29,16 @@ public class SortTest {
         runSort(new ShellSort());
     }
 
+    @Test
+    public void testMergeSort() {
+        runSort(new MergeSort());
+    }
+
+    @Test
+    public void testQuickSort() {
+        runSort(new QuickSort());
+    }
+
     private void runSort(Sort sorter) {
         System.out.println(sorter.getClass().getSimpleName());
 
