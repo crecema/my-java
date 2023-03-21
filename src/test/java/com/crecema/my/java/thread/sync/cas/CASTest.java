@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CASTest {
 
@@ -29,6 +30,22 @@ public class CASTest {
         public void unlock() {
             lockFlagHandle.compareAndSet(this, 1, 0);
         }
+    }
+
+    static class CasLockV2 {
+
+        private final AtomicInteger lockFlag = new AtomicInteger(0);
+
+        public void lock() {
+            while (!lockFlag.compareAndSet(0, 1)) {
+                System.out.println("try lock ......");
+            }
+        }
+
+        public void unlock() {
+            lockFlag.compareAndSet(1, 0);
+        }
+
     }
 
     static class Counter {
