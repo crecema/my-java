@@ -16,7 +16,18 @@ public class VarHandleTest {
         Signal signal = new Signal();
         VarHandle varHandle = MethodHandles.lookup().findVarHandle(Signal.class, "signal", boolean.class);
         varHandle.compareAndSet(signal, false, true);
-        System.out.println(signal.signal);
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            signal.signal = false;
+        }).start();
+
+        while (!varHandle.compareAndSet(signal, false, true)) {}
+        System.out.println("抢到锁啦，自旋结束");
     }
 
 }

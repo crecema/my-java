@@ -11,7 +11,7 @@ public class CASTest {
 
     static class CasLock {
 
-        private int lockFlag = 0;
+        private volatile int lockFlag = 0;
 
         VarHandle lockFlagHandle;
         {
