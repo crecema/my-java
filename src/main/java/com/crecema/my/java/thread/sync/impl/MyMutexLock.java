@@ -1,19 +1,16 @@
-package com.crecema.my.java.thread.sync;
+package com.crecema.my.java.thread.sync.impl;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
-/**
- * 自己实现一个简单的阻塞锁，status=1持有锁，=0未持有锁
- */
-public class BlockLock implements Lock {
+public class MyMutexLock implements Lock {
 
     private static class Sync extends AbstractQueuedSynchronizer {
         @Override
         protected boolean tryAcquire(int arg) {
-            if (compareAndSetState(0, 1)) {
+            if (compareAndSetState(0, arg)) {
                 setExclusiveOwnerThread(Thread.currentThread());
                 return true;
             }
@@ -23,18 +20,28 @@ public class BlockLock implements Lock {
         @Override
         protected boolean tryRelease(int arg) {
             setExclusiveOwnerThread(null);
-            setState(0);
+            setState(arg);
             return true;
         }
 
         @Override
-        protected boolean isHeldExclusively() {
-            return getState() == 1;
+        protected int tryAcquireShared(int arg) {
+            return super.tryAcquireShared(arg);
         }
 
-        public Condition newCondition() {
+        @Override
+        protected boolean tryReleaseShared(int arg) {
+            return super.tryReleaseShared(arg);
+        }
+
+        @Override
+        protected boolean isHeldExclusively() {
+            return getExclusiveOwnerThread() == Thread.currentThread();
+        }
+
+        protected ConditionObject newCondition() {
             return new ConditionObject();
-       }
+        }
     }
 
     private final Sync sync = new Sync();
@@ -61,7 +68,7 @@ public class BlockLock implements Lock {
 
     @Override
     public void unlock() {
-        sync.release(1);
+        sync.release(0);
     }
 
     @Override
