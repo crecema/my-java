@@ -5,14 +5,14 @@ import java.util.List;
 
 public class StudentController {
 
-    private StudentService studentService = new StudentService();
+    private final StudentService studentService = new StudentService();
 
     public List<Student> studentList() {
-        return studentService.getAllStudent();
+        return studentService.getStudentByName(null);
     }
 
     public Student student() {
-        return studentService.getStudent(1);
+        return studentService.getStudentById(1);
     }
 
     public Student minStudent(List<Student> studentList) {

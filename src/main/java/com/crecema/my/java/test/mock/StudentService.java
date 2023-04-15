@@ -1,24 +1,44 @@
 package com.crecema.my.java.test.mock;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
+/**
+ * 被测类
+ */
 public class StudentService {
 
-    private StudentRepository studentRepository = new StudentRepository();
+    private final StudentRepository studentRepository = new StudentRepository();
 
-    public List<Student> getAllStudent() {
-        return studentRepository.selectStudentList();
+    public List<Student> getStudentByName(String name) {
+        // 调用下游普通方法
+        List<Student> studentList = studentRepository.selectStudentList();
+        if (name == null) {
+            return studentList;
+        } else if ("".equals(name)) {
+            throw new IllegalArgumentException("name not be ''");
+        } else {
+            return studentList.stream()
+                    .filter(student -> name.equals(student.getName()))
+                    .toList();
+        }
     }
 
-    public Student getStudent(Integer id) {
-        return studentRepository.selectStudent(id);
+    public Student getStudentById(Integer id) {
+        List<Student> studentList = studentRepository.selectStudentList();
+        // 调用自身private方法
+        return filterStudentById(studentList, id);
     }
 
-    private List<Student> filterStudent(List<Student> studentList) {
+    private Student filterStudentById(List<Student> studentList, Integer id) {
         return studentList.stream()
-                .filter(student -> student.getAge() == 22)
-                .collect(Collectors.toList());
+                .filter(student -> Objects.equals(student.getId(), id))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public StudentRepository getNewRepository() {
+        return StudentRepository.newInstance();
     }
 
 }
