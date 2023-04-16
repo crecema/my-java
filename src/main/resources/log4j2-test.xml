@@ -43,7 +43,7 @@
             <AppenderRef ref="BusinessLog"/>
             <AppenderRef ref="ErrorLog"/>
         </Root>
-        <Logger name="com.crecema.my.java" level="info" additivity="false">
+        <Logger name="com.crecema.my.java" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="BusinessLog"/>
             <AppenderRef ref="ErrorLog"/>
