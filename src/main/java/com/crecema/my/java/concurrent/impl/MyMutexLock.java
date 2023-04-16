@@ -1,52 +1,42 @@
-package com.crecema.my.java.thread.sync.impl;
+package com.crecema.my.java.concurrent.impl;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
-public class MyShareLock implements Lock {
-
-    private int number;
-
-    public MyShareLock(int number) {
-        this.number = number;
-    }
+public class MyMutexLock implements Lock {
 
     private static class Sync extends AbstractQueuedSynchronizer {
-
-        public Sync(int number) {
-            setState(number);
-        }
-
         @Override
         protected boolean tryAcquire(int arg) {
-            return super.tryAcquire(arg);
+            if (compareAndSetState(0, arg)) {
+                setExclusiveOwnerThread(Thread.currentThread());
+                return true;
+            }
+            return false;
         }
 
         @Override
         protected boolean tryRelease(int arg) {
-            return super.tryRelease(arg);
+            setExclusiveOwnerThread(null);
+            setState(arg);
+            return true;
         }
 
         @Override
         protected int tryAcquireShared(int arg) {
-            while (true) {
-                int state = getState();
-                if (compareAndSetState(state, state + 1)) {
-                    return state + 1;
-                }
-            }
+            return super.tryAcquireShared(arg);
         }
 
         @Override
         protected boolean tryReleaseShared(int arg) {
-            return compareAndSetState(getState(), getState() + 1);
+            return super.tryReleaseShared(arg);
         }
 
         @Override
         protected boolean isHeldExclusively() {
-            return super.isHeldExclusively();
+            return getExclusiveOwnerThread() == Thread.currentThread();
         }
 
         protected ConditionObject newCondition() {
@@ -54,31 +44,31 @@ public class MyShareLock implements Lock {
         }
     }
 
-    private Sync sync = new Sync(number);
+    private final Sync sync = new Sync();
 
     @Override
     public void lock() {
-        sync.acquireShared(1);
+        sync.acquire(1);
     }
 
     @Override
     public void lockInterruptibly() throws InterruptedException {
-
+        sync.acquireInterruptibly(1);
     }
 
     @Override
     public boolean tryLock() {
-        return sync.releaseShared(1);
+        return sync.tryAcquire(1);
     }
 
     @Override
     public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
-        return sync.tryAcquireSharedNanos(1, unit.toNanos(time));
+        return sync.tryAcquireNanos(1, unit.toNanos(time));
     }
 
     @Override
     public void unlock() {
-        sync.releaseShared(1);
+        sync.release(0);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.crecema.my.java.thread.sync.impl;
+package com.crecema.my.java.concurrent.impl;
 
 import org.junit.jupiter.api.Test;
 

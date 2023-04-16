@@ -1,4 +1,4 @@
-package com.crecema.my.java.thread.sync.mutex;
+package com.crecema.my.java.concurrent.mutex;
 
 import org.junit.jupiter.api.Test;
 

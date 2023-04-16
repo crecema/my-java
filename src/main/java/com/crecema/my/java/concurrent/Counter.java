@@ -1,4 +1,4 @@
-package com.crecema.my.java.thread.sync;
+package com.crecema.my.java.concurrent;
 
 public class Counter {
 
