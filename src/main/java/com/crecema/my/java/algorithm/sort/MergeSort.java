@@ -2,42 +2,37 @@ package com.crecema.my.java.algorithm.sort;
 
 public class MergeSort implements Sort {
 
-    private int[] tmp;
+    private int[] temp;
 
     @Override
     public void sort(int[] array) {
-        tmp = new int[array.length];
-        sort(array, 0, array.length - 1);
+        temp = new int[array.length];
+        mergeSort(array, 0, array.length - 1);
+        temp = null;
     }
 
-    /**
-     * 部分排序
-     */
-    private void sort(int[] array, int l, int r) {
-        if (r <= l) {
+    private void mergeSort(int[] array, int left, int right) {
+        if (left == right) {
             return;
         }
-        int m = l + (r - l) / 2;
-        sort(array, l, m);
-        sort(array, m + 1, r);
-        merge(array, l, m, r);
+        int mid = left + (right - left) / 2;
+        mergeSort(array, left, mid);
+        mergeSort(array, mid + 1, right);
+        merge(array, left, mid, right);
     }
 
-    /**
-     * 将数组中两个相邻段有序段合并为一个有序段
-     */
-    private void merge(int[] array, int l, int m, int r) {
-        System.arraycopy(array, l, tmp, l, r + 1 - l);
-        int i = l, j = m + 1;
-        for (int k = l; k <= r; k++) {
-            if (i > m) {
-                array[k] = tmp[j++];
-            } else if (j > r) {
-                array[k] = tmp[i++];
+    private void merge(int[] array, int left, int mid, int right) {
+        System.arraycopy(array, left, temp, left, right - left + 1);
+        int l = left, r = mid + 1;
+        for (int i = left; i <= right; i++) {
+            if (l > mid) {
+                array[i] = temp[r++];
+            } else if (r > right) {
+                array[i] = temp[l++];
+            } else if (temp[l] <= temp[r]) {
+                array[i] = temp[l++];
             } else {
-                array[k] = array[i] < array[j]
-                        ? array[i++]
-                        : array[j++];
+                array[i] = temp[r++];
             }
         }
     }

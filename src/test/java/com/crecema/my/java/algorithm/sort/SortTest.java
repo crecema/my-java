@@ -69,6 +69,7 @@ public class SortTest {
         end = LocalDateTime.now();
         assertTrue(checkArray(integers));
         System.out.println("Repeat: \t" + ((double) Duration.between(start, end).toMillis()) / 1000);
+        System.out.println();
     }
 
     private int[] genIntArray4Random(int size) {
