@@ -1,7 +1,7 @@
 package com.crecema.my.java.test.mock;
 
 import com.alibaba.testable.core.tool.OmniConstructor;
-import com.crecema.my.java.util.JsonUtil;
+import com.crecema.my.java.util.JsonUtils;
 import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
@@ -23,9 +23,9 @@ public class StudentControllerTest {
     public void testStudentList() {
         StudentController controller = new StudentController();
         List<Student> studentList = controller.studentList();
-        System.out.println(JsonUtil.toJson(studentList));
+        System.out.println(JsonUtils.toJson(studentList));
 
-        System.out.println(JsonUtil.toJson(controller.student()));
+        System.out.println(JsonUtils.toJson(controller.student()));
 
     }
 
@@ -33,7 +33,7 @@ public class StudentControllerTest {
     public void testMinStudent() {
         Student student = OmniConstructor.newInstance(Student.class);
         student.getExtra().getSkills().add("program");
-        System.out.println(JsonUtil.toJson(student));
+        System.out.println(JsonUtils.toJson(student));
     }
 
 }
