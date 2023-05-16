@@ -6,6 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Function;
 
 @Slf4j
 public abstract class JdbcUtils {
@@ -87,11 +88,10 @@ public abstract class JdbcUtils {
         }
     }
 
-    public static <T> List<T> executeQuery(String sql, RowMapper<T> rowMapper, Object... params) {
+    public static <T> List<T> executeQuery(String sql, Function<ResultSet, T> mapper, Object... params) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        List<T> results = new ArrayList<>();
         try {
             connection = getConnection();
             statement = connection.prepareStatement(sql);
@@ -99,13 +99,14 @@ public abstract class JdbcUtils {
                 statement.setObject(i + 1, params[i]);
             }
             resultSet = statement.executeQuery();
+            List<T> list = new ArrayList<>();
             while (resultSet.next()) {
-                results.add(rowMapper.mapRow(resultSet));
+                list.add(mapper.apply(resultSet));
             }
-            return results;
+            return list;
         } catch (Exception e) {
             log.error("query error", e);
-            return results;
+            return new ArrayList<>();
         } finally {
             close(resultSet, statement, connection);
         }
