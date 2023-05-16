@@ -8,11 +8,9 @@ import com.fasterxml.jackson.databind.type.MapType;
 
 import java.util.*;
 
-public class JsonUtil {
+public abstract class JsonUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
-    private JsonUtil() {}
 
     public static String toJson(Object object) {
         try {
