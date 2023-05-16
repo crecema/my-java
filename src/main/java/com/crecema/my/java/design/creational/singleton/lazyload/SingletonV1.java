@@ -1,4 +1,4 @@
-package com.crecema.my.java.design.singleton.lazyload;
+package com.crecema.my.java.design.creational.singleton.lazyload;
 
 /**
  * 简单懒加载模式，线程不安全

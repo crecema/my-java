@@ -1,4 +1,4 @@
-package com.crecema.my.java.design.singleton.preload;
+package com.crecema.my.java.design.creational.singleton.preload;
 
 /**
  * 简单的预加载模式，线程安全
