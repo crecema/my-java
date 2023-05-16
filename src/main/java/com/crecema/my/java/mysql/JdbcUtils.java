@@ -11,7 +11,6 @@ import java.util.function.Function;
 @Slf4j
 public abstract class JdbcUtils {
 
-    private static final String DRIVER;
     private static final String URL;
     private static final String USERNAME;
     private static final String PASSWORD;
@@ -20,11 +19,9 @@ public abstract class JdbcUtils {
         try {
             Properties jdbcProperties = new Properties();
             jdbcProperties.load(JdbcUtils.class.getClassLoader().getResourceAsStream("jdbc.properties"));
-            DRIVER = jdbcProperties.getProperty("jdbc.driver");
             URL = jdbcProperties.getProperty("jdbc.url");
             USERNAME = jdbcProperties.getProperty("jdbc.username");
             PASSWORD = jdbcProperties.getProperty("jdbc.password");
-            Class.forName(DRIVER);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

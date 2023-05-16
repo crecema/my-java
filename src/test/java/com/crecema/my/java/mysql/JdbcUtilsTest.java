@@ -7,6 +7,9 @@ public class JdbcUtilsTest {
 
     @Test
     public void testExecuteQuery() {
+
+
+
         String sql = "select * from user";
         User user = JdbcUtils.executeQuery(sql, UserMapper::mapRow).get(0);
         System.out.println(user);
