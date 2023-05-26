@@ -1,3 +1,14 @@
-/.idea/
-/target/
+### IntelliJ IDEA ###
+.idea
+*.iml
+**/target/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+### Other Files ###
+*.class
 *.log
