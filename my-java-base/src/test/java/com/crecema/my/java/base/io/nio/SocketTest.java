@@ -1,98 +1,111 @@
 package com.crecema.my.java.base.io.nio;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.Set;
 
 public class SocketTest {
 
-    private static class server {
-        public void start() throws IOException {
+    @Test
+    public void testSimpleSocket() throws InterruptedException {
+        Runnable server = () -> {
             try (var selector = Selector.open(); var serverSocketChannel = ServerSocketChannel.open()) {
+                // 非阻塞模式
                 serverSocketChannel.configureBlocking(false);
                 // 绑定服务器地址和端口号
-                // serverSocketChannel.socket().bind(new InetSocketAddress("127.0.0.1", 8080));
                 serverSocketChannel.bind(new InetSocketAddress("127.0.0.1", 8080));
+
                 // 注册ServerSocketChannel到Selector并监听ACCEPT事件
                 serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-                System.out.println("服务器启动，等待客户端连接...");
 
-                while (true) {
-                    // 阻塞等待事件发生
-                    selector.select();
-                    // 获取所有发生的事件
-                    Set<SelectionKey> selectedKeys = selector.selectedKeys();
-                    Iterator<SelectionKey> iterator = selectedKeys.iterator();
-
-                    while (iterator.hasNext()) {
-                        SelectionKey key = iterator.next();
-                        if (key.isAcceptable()) {
-                            // 处理连接事件
-                            ServerSocketChannel channel = (ServerSocketChannel) key.channel();
-                            // 获取客户端连接
-                            SocketChannel clientChannel = channel.accept();
-                            clientChannel.configureBlocking(false);
-                            clientChannel.register(selector, SelectionKey.OP_READ);
-                        } else if (key.isReadable()) {
-                            // 处理读事件
-                            SocketChannel channel = (SocketChannel) key.channel();
-                            // 读取数据
-                            ByteBuffer buffer = ByteBuffer.allocate(32);
-                            int size;
-                            while ((size = channel.read(buffer)) != -1) {
-                                buffer.flip();
-                                System.out.println("receive request: " + new String(buffer.array(), 0, size));
-                                buffer.clear();
+                while (!Thread.currentThread().isInterrupted()) {
+                    selector.select(); // 阻塞等待事件发生
+                    selector.selectedKeys().forEach(key -> {
+                        try {
+                            if (key.isAcceptable()) {
+                                // 获取ServerSocketChannel
+                                ServerSocketChannel serverSocketChannel1 = (ServerSocketChannel) key.channel();
+                                // 获取SocketChannel
+                                SocketChannel socketChannel = serverSocketChannel1.accept();
+                                // 非阻塞模式
+                                socketChannel.configureBlocking(false);
+                                // 注册SocketChannel到Selector并监听READ事件
+                                socketChannel.register(selector, SelectionKey.OP_READ);
+                            } else if (key.isReadable()) {
+                                // 获取SocketChannel
+                                SocketChannel socketChannel = (SocketChannel) key.channel();
+                                // 读取数据
+                                ByteBuffer buffer = ByteBuffer.allocate(32);
+                                int size;
+                                while ((size = socketChannel.read(buffer)) != -1) {
+                                    if (size == 0) {
+                                        break;
+                                    }
+                                    buffer.flip();
+                                    byte[] bytes = new byte[buffer.remaining()];
+                                    buffer.get(bytes);
+                                    String request = new String(bytes);
+                                    System.out.println("server--> request: " + request);
+                                    Thread.sleep(1000); // mock handle request
+                                    String response = "hi " + request;
+                                    System.out.println("server--> response: " + response);
+                                    socketChannel.write(ByteBuffer.wrap(response.getBytes()));
+                                    buffer.clear();
+                                }
+                                System.out.println("server--> bye");
+                                socketChannel.close();
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        // 移除已处理的事件
-                        iterator.remove();
-                    }
+                    });
                 }
-
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
-        }
-    }
+        };
 
-    private static class client {
-        private static final String HOST = "127.0.0.1";
-        private static final int PORT = 8080;
-        private static final String[] REQUESTS = {"hello ", "I am ", "V ", "!!!"};
-        public void start() throws IOException {
-            try (SocketChannel socketChannel = SocketChannel.open()) {
-                System.out.println("client started, connecting to server: " + HOST + ":" + PORT);
-                socketChannel.connect(new InetSocketAddress(HOST, PORT));
-                System.out.println("client connect success: " + socketChannel.getRemoteAddress());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
+        Runnable client = () -> {
+            try (var clientChannel = SocketChannel.open()) {
+                // 连接服务器
+                clientChannel.connect(new InetSocketAddress("localhost", 8080));
+                // 发送消息给服务器
+                String message = "Hello, Server!";
+                ByteBuffer buffer = ByteBuffer.wrap(message.getBytes());
+                clientChannel.write(buffer);
 
-    public static void main(String[] args) {
-        new Thread(() -> {
-            try {
-                new SocketTest.server().start();
+                // 读取服务器响应
+                buffer.clear();
+                int bytesRead = clientChannel.read(buffer);
+                buffer.flip();
+                byte[] responseBytes = new byte[bytesRead];
+                buffer.get(responseBytes);
+                String response = new String(responseBytes);
+                System.out.println("Server response: " + response);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).start();
+        };
 
-        new Thread(() -> {
-            try {
-                new SocketTest.client().start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        Thread server1 = new Thread(server);
+        server1.start();
+
+        Thread client1 = new Thread(client);
+        client1.start();
+
+        Thread client2 = new Thread(client);
+        client2.start();
+
+        server1.join();
+        client1.join();
+        client2.join();
+
     }
 }

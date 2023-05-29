@@ -9,8 +9,8 @@ import java.nio.file.StandardOpenOption;
 
 public class ChannelTest {
 
-    @Test
-    public void testFileChannel() {
+    @Test // 阻塞读取文件
+    public void testBlockReadFile() {
         Path path = Path.of("src/test/resources/test.txt");
         try (FileChannel channel = FileChannel.open(path, StandardOpenOption.READ)) {
             ByteBuffer buffer = ByteBuffer.allocate(1024);
