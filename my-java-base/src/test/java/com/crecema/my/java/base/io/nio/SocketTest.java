@@ -3,7 +3,11 @@ package com.crecema.my.java.base.io.nio;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -17,7 +21,84 @@ import java.util.Iterator;
 public class SocketTest {
 
     @Test
-    public void testSimpleSocket() throws InterruptedException {
+    public void testNonBlockIO() throws InterruptedException {
+        Runnable server = () -> {
+            try (ServerSocket serverSocket = new ServerSocket(8080)) {
+                System.out.println("server--> server started, listening on port: " + serverSocket.getLocalPort());
+                System.out.println();
+                while (!Thread.currentThread().isInterrupted()) {
+
+                    Socket socket = serverSocket.accept(); // 阻塞等待连接
+                    System.out.println("server--> accept connection from client: " + socket.getRemoteSocketAddress());
+
+                    InputStream inputStream = socket.getInputStream();
+                    OutputStream outputStream = socket.getOutputStream();
+                    byte[] buffer = new byte[32];
+                    int size;
+                    while ((size = inputStream.read(buffer)) != -1) { // 阻塞等待数据
+                        String request = new String(buffer, 0, size);
+                        Thread.sleep(1);
+                        String response = "hi " + request;
+                        outputStream.write(response.getBytes());
+                    }
+                    System.out.println("server--> bye");
+                    System.out.println();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        };
+        Runnable client = () -> {
+            try (var clientChannel = SocketChannel.open()) {
+                // 连接服务器
+                clientChannel.connect(new InetSocketAddress("localhost", 8080));
+                clientChannel.configureBlocking(false);
+                int port = getPort(clientChannel.getLocalAddress());
+                // 发送消息给服务器
+                for (int i = 0; i < 2; i++) {
+                    // 发送消息
+                    String request = String.valueOf(port);
+                    ByteBuffer buffer = ByteBuffer.allocate(32);
+                    buffer.put(request.getBytes());
+                    buffer.flip();
+                    clientChannel.write(buffer);
+                    buffer.clear();
+                    System.out.format("client(%d)--> request: %d\n", port, port);
+                    // 读取响应
+                    int size = 0;
+                    while ((size = clientChannel.read(buffer)) != -1) {
+                        // 非阻塞IO的精髓，没有数据时，直接返回0，而不是阻塞等待
+                        if (size == 0) {
+                            System.out.println("client--> waiting response...");
+                        }
+                        if (size > 0) {
+                            buffer.flip();
+                            byte[] responseBytes = new byte[size];
+                            buffer.get(responseBytes);
+                            String response = new String(responseBytes);
+                            System.out.format("client(%d)--> response: %s\n", port, response);
+                            break;
+                        }
+                    }
+                }
+                System.out.format("client(%d)--> bye\n", port);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
+
+        Thread serverThread = new Thread(server);
+        serverThread.start();
+        Thread clientThread = new Thread(client);
+        clientThread.start();
+
+        clientThread.join();
+    }
+
+    @Test
+    public void testMultiplexIOSocket() throws InterruptedException {
         Runnable server = () -> {
             // 创建Selector 打开ServerSocketChannel
             try (var selector = Selector.open(); var serverSocketChannel = ServerSocketChannel.open()) {
