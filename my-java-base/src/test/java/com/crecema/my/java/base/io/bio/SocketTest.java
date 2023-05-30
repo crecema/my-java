@@ -16,12 +16,11 @@ public class SocketTest {
 
     @Test
     public void testSimpleSocket() throws InterruptedException {
-        LocalDateTime start = LocalDateTime.now();
         Runnable server = () -> {
             try (ServerSocket serverSocket = new ServerSocket(8080)) {
                 System.out.println("server--> server started, listening on port: " + serverSocket.getLocalPort());
                 System.out.println();
-                while (true) {
+                while (!Thread.currentThread().isInterrupted()) {
 
                     Socket socket = serverSocket.accept(); // 阻塞等待连接
                     System.out.println("server--> accept connection from client: " + socket.getRemoteSocketAddress());
@@ -72,6 +71,8 @@ public class SocketTest {
             }
         };
 
+        LocalDateTime start = LocalDateTime.now();
+
         Thread serverThread = new Thread(server);
         serverThread.start();
         Thread.sleep(100);
@@ -90,12 +91,11 @@ public class SocketTest {
         clientThread3.join();
 
         LocalDateTime end = LocalDateTime.now();
-        System.out.println("time cost: " + Duration.between(start, end).toSeconds() + "ms");
+        System.out.println("time cost: " + Duration.between(start, end).toMillis() + "ms");
     }
 
     @Test
     public void testThreadSocket() throws InterruptedException {
-        LocalDateTime start = LocalDateTime.now();
         // 容量为5的线程池
         ExecutorService executorService = Executors.newFixedThreadPool(5);
 
@@ -103,7 +103,7 @@ public class SocketTest {
             try (ServerSocket serverSocket = new ServerSocket(8080)) {
                 System.out.println("server--> server started, listening on port: " + serverSocket.getLocalPort());
                 System.out.println();
-                while (true) {
+                while (!Thread.currentThread().isInterrupted()) {
 
                     Socket socket = serverSocket.accept(); // 阻塞等待连接
                     System.out.println("server--> accept connection from client: " + socket.getRemoteSocketAddress());
@@ -120,7 +120,6 @@ public class SocketTest {
                                 outputStream.write(response.getBytes());
                             }
                             System.out.println("server--> bye");
-                            System.out.println();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -160,6 +159,8 @@ public class SocketTest {
             }
         };
 
+        LocalDateTime start = LocalDateTime.now();
+
         Thread serverThread = new Thread(server);
         serverThread.start();
         Thread.sleep(100);
@@ -178,7 +179,7 @@ public class SocketTest {
         clientThread3.join();
 
         LocalDateTime end = LocalDateTime.now();
-        System.out.println("time cost: " + Duration.between(start, end).toSeconds() + "ms");
+        System.out.println("time cost: " + Duration.between(start, end).toMillis() + "ms");
     }
 
 }
