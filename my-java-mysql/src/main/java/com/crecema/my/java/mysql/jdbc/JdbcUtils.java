@@ -2,11 +2,13 @@ package com.crecema.my.java.mysql.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.function.Function;
 
 @Slf4j
 public abstract class JdbcUtils {
@@ -64,7 +66,7 @@ public abstract class JdbcUtils {
     /**
      * DQL (select)
      */
-    public static <T> List<T> executeQuery(String sql, Function<ResultSet, T> mapper, Object... params) {
+    public static <T> List<T> executeQuery(String sql, Mapper<T> mapper, Object... params) {
         try (var connection = getConnection(); var statement = connection.prepareStatement(sql)) {
             for (var i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
@@ -72,13 +74,18 @@ public abstract class JdbcUtils {
             var resultSet = statement.executeQuery();
             List<T> list = new ArrayList<>();
             while (resultSet.next()) {
-                list.add(mapper.apply(resultSet));
+                list.add(mapper.map(resultSet));
             }
             return list;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             log.error("query error", e);
             return new ArrayList<>();
         }
+    }
+
+    @FunctionalInterface
+    public interface Mapper<T> {
+        T map(ResultSet resultSet) throws SQLException;
     }
 
 }
