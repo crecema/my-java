@@ -1,4 +1,4 @@
-package com.crecema.my.java.base.mysql.domain;
+package com.crecema.my.java.mysql.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
