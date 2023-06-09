@@ -24,16 +24,28 @@ public class UserRepository {
         return user;
     };
 
-    public User selectOneById(Integer id) {
+    public User selectOne(Integer id) {
         String sql = "select * from user where id = ?";
         List<User> users = JdbcUtils.executeQuery(sql, userMapper, id);
         return users.isEmpty() ? null : users.get(0);
     }
 
-    public User selectOneByEmail(String email) {
-        String sql = "select * from user where email = ?";
-        List<User> users = JdbcUtils.executeQuery(sql, userMapper, email);
-        return users.isEmpty() ? null : users.get(0);
+    public List<User> selectList(User condition) {
+        String sql = "select * from user limit 100";
+        return JdbcUtils.executeQuery(sql, userMapper);
+    }
+
+    public int insert(User user) {
+        String sql = "insert into user values (default, ?, ?, ?, default, default, ?, ?, ?, default, default)";
+        return JdbcUtils.executeUpdate(sql, user.getName(), user.getEmail(), user.getPhone(), user.getIdNumber(), user.getSex().getCode(), user.getAge(), JsonUtils.toJson(user.getExtraInfo()));
+    }
+
+    public int update(User user, User condition) {
+        return 0;
+    }
+
+    public int delete(User condition) {
+        return 0;
     }
 
 }

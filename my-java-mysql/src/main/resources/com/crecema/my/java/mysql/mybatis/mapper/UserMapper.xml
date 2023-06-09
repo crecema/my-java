@@ -18,7 +18,7 @@
 <!--        <result property="updateTime" column="update_time"/>-->
 <!--    </resultMap>-->
 
-    <select id="selectOneById" resultType="com.crecema.my.java.mysql.domain.User">
+    <select id="selectOneById" parameterType="int" resultType="com.crecema.my.java.mysql.domain.User">
         select * from user where id = #{id}
     </select>
 

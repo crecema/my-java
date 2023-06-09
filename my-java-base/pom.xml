@@ -13,15 +13,4 @@
     <groupId>org.crecema</groupId>
     <artifactId>my-java-base</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-        </dependency>
-    </dependencies>
-
 </project>
