@@ -49,4 +49,5 @@ public class JdbcUtilsTest {
             int effect = JdbcUtils.executeUpdate(sql, name, email, phone, idNumber, sex, age);
         }
     }
+
 }

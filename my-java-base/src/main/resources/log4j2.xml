@@ -43,6 +43,11 @@
             <AppenderRef ref="BusinessLog"/>
             <AppenderRef ref="ErrorLog"/>
         </Root>
+        <Logger name="org.apache.ibatis" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="BusinessLog"/>
+            <AppenderRef ref="ErrorLog"/>
+        </Logger>
         <Logger name="com.crecema.my.java" level="info" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="BusinessLog"/>
