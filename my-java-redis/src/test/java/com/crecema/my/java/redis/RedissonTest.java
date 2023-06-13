@@ -11,6 +11,7 @@ import org.redisson.config.Config;
 
 import java.time.Duration;
 import java.time.temporal.TemporalUnit;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class RedissonTest {
@@ -29,7 +30,8 @@ public class RedissonTest {
     public void testListCRUD() {
         String key = "not_exists_key";
         RList<Object> list = redissonClient.getList(key);
-        list.expire(Duration.ofSeconds(10));
+        list.expire(Duration.ofSeconds(60 * 10));
+        List<Object> objectList = list.readAll();
         // 判断是否存在, 存在则删除
         if (list.isExists()) {
             list.delete();
