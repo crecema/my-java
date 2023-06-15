@@ -1,4 +1,4 @@
-package com.crecema.my.java.redis;
+package com.crecema.my.java.redis.redisson;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

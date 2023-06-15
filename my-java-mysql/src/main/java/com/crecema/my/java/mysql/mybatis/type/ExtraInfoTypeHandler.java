@@ -1,4 +1,4 @@
-package com.crecema.my.java.mysql.mybatis.mapper.type;
+package com.crecema.my.java.mysql.mybatis.type;
 
 import com.crecema.my.java.base.util.JsonUtils;
 import com.crecema.my.java.mysql.domain.User;

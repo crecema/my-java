@@ -1,16 +1,16 @@
-package com.crecema.my.java.redis;
+package com.crecema.my.java.redis.jedis;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPooled;
 
 public class JedisTest {
 
-    private static Jedis jedis;
+    private static JedisPooled jedis;
 
     @BeforeAll
     public static void init() {
-        jedis = new Jedis("localhost", 6379);
+        jedis = new JedisPooled("localhost", 6379);
     }
 
     @Test
