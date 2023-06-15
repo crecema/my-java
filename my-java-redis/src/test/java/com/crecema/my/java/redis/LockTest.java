@@ -35,7 +35,7 @@ public class LockTest {
             System.out.println(list);
         });
         Thread thread2 = new Thread(() -> {
-            Set<String> list = getListWithCache(500);
+            Set<String> list = getListWithCache(1200);
             System.out.println(list);
         });
         Thread thread3 = new Thread(() -> {
@@ -64,9 +64,13 @@ public class LockTest {
         RLock lock = redissonClient.getLock(key + "_lock");
         try {
             LocalDateTime start = LocalDateTime.now();
-            lock.lock(1000, TimeUnit.MILLISECONDS);
+            boolean b = lock.tryLock(1200, 1000, TimeUnit.MILLISECONDS);
             LocalDateTime end = LocalDateTime.now();
             System.out.println("lock cost: " + Duration.between(start, end).toMillis() + "ms");
+            if (!b) {
+                System.out.println("lock failed");
+                return new HashSet<>();
+            }
             // 再次查缓存
             if (!rSet.isEmpty()) {
                 System.out.println("second hint cache");
