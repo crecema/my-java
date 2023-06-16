@@ -13,6 +13,9 @@
         <module>my-java-base</module>
         <module>my-java-mysql</module>
         <module>my-java-redis</module>
+        <module>my-java-kafka</module>
+        <module>my-java-rpc</module>
+        <module>my-java-netty</module>
     </modules>
 
     <properties>
