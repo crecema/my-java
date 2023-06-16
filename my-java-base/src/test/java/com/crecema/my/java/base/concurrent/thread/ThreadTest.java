@@ -90,8 +90,13 @@ public class ThreadTest {
     @Test
     public void test() throws InterruptedException {
         Runnable task = () -> {
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 System.out.println(Thread.currentThread().getName() + ": I am running");
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         };
 
@@ -99,8 +104,10 @@ public class ThreadTest {
         newThread.start();
 
         // 2秒后中断newThread
-        Thread.sleep(10);
+        Thread.sleep(2000);
         newThread.interrupt();
+        Thread.sleep(2000);
+        System.out.println("main thread exit");
     }
 
 }

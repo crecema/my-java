@@ -1,13 +1,25 @@
-package com.crecema.my.java.base.concurrent.atomic;
+package com.crecema.my.java.base.concurrent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.concurrent.atomic.*;
 
 public class AtomicTest {
+
+    private static int i = 0;
+
+    @Test
+    void testCAS() throws NoSuchFieldException, IllegalAccessException {
+        VarHandle iHandle = MethodHandles.lookup()
+                .findStaticVarHandle(AtomicTest.class, "i", int.class);
+        iHandle.compareAndSet(0, 10);
+        Assertions.assertEquals(10, i);
+    }
 
     // 原子更新基本类型
     @Test

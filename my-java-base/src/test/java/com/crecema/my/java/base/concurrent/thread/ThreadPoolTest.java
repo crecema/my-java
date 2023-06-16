@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class ThreadPoolExecutorTest {
+public class ThreadPoolTest {
 
     @Test
     public void testRunnable() throws InterruptedException, ExecutionException {
@@ -63,6 +63,30 @@ public class ThreadPoolExecutorTest {
         for (Future<Integer> future : futureList) {
             System.out.println(future.get());
         }
+    }
+
+    @Test // 自带的线程池
+    public void testExecutors() {
+        // ThreadPoolExecutor -> ExecutorService -> Executor
+        ExecutorService executorService;
+
+        // FixedThreadPool 使用固定线程数 + 无界阻塞队列
+        executorService = Executors.newFixedThreadPool(5);
+
+        // SingleThreadExecutor 使用单一线程数 + 无界阻塞队列
+        executorService = Executors.newSingleThreadExecutor();
+
+        // CachedThreadPool 使用无数线程数 + 不存储元素的阻塞队列
+        executorService = Executors.newCachedThreadPool();
+
+        // ScheduledThreadPoolExecutor -> ScheduledExecutorService -> ExecutorService -> Executor
+        ScheduledExecutorService scheduledExecutorService;
+
+        // ScheduledThreadPool
+        scheduledExecutorService = Executors.newScheduledThreadPool(5);
+
+        // SingleThreadScheduledExecutor
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     }
 
 }

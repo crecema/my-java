@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * volatile关键字测试
- * 可见性
- * 原子性
+ * 保证可见性
+ * 不保证原子性
  */
 public class VolatileTest {
 

@@ -1,4 +1,4 @@
-package com.crecema.my.java.base.concurrent.tool;
+package com.crecema.my.java.base.concurrent.sync.semaphore;
 
 import org.junit.jupiter.api.Test;
 

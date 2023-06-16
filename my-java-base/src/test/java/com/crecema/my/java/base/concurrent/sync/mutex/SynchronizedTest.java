@@ -1,4 +1,4 @@
-package com.crecema.my.java.base.concurrent.mutex;
+package com.crecema.my.java.base.concurrent.sync.mutex;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
