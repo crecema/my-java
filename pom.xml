@@ -22,15 +22,16 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <lombok.version>1.18.26</lombok.version>
         <junit.version>5.9.2</junit.version>
         <log4j.version>2.20.0</log4j.version>
-        <mysql.version>8.0.33</mysql.version>
-        <jedis.version>4.4.1</jedis.version>
-        <lombok.version>1.18.26</lombok.version>
         <jsckson.version>2.14.2</jsckson.version>
+        <mysql.version>8.0.33</mysql.version>
         <mybatis.version>3.5.13</mybatis.version>
+        <jedis.version>4.4.1</jedis.version>
         <lettuce.version>6.2.4.RELEASE</lettuce.version>
         <redisson.version>3.21.3</redisson.version>
+        <thrift.version>0.18.1</thrift.version>
     </properties>
 
     <dependencyManagement>
@@ -89,6 +90,12 @@
                 <groupId>io.lettuce</groupId>
                 <artifactId>lettuce-core</artifactId>
                 <version>${lettuce.version}</version>
+            </dependency>
+            <!-- thrift -->
+            <dependency>
+                <groupId>org.apache.thrift</groupId>
+                <artifactId>libthrift</artifactId>
+                <version>${thrift.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -13,4 +13,11 @@
     <groupId>org.crecema</groupId>
     <artifactId>my-java-rpc</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
