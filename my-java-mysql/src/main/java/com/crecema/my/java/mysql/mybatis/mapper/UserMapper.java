@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface UserMapper {
 
-    User selectOne(int id);
+    User selectOneById(long id);
 
     List<User> selectList(User condition);
 

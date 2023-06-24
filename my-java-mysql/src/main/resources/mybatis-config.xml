@@ -12,7 +12,7 @@
     </settings>
 
     <typeHandlers>
-        <package name="com.crecema.my.java.mysql.mybatis.mapper.type"/>
+        <package name="com.crecema.my.java.mysql.mybatis.type"/>
     </typeHandlers>
 
     <environments default="development">

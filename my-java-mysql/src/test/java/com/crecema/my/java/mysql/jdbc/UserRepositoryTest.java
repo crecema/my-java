@@ -8,7 +8,7 @@ public class UserRepositoryTest {
     @Test
     void testSelectOneById() {
         UserRepository userRepository = new UserRepository();
-        User user = userRepository.selectOne(10000000);
+        User user = userRepository.selectOne(1);
         System.out.println(user);
     }
 

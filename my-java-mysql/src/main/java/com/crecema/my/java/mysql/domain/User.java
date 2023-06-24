@@ -9,14 +9,15 @@ import java.util.Date;
 @Data
 public class User {
 
-    private Integer id;
+    private Long id;
+    private Long uid;
     private String name;
     private String email;
     private String phone;
-    private String idNumber;
-    private Integer status;
+    private String idNo;
     private Sex sex;
     private Integer age;
+    private Integer status;
     private ExtraInfo extraInfo;
     private Date createTime;
     private Date updateTime;

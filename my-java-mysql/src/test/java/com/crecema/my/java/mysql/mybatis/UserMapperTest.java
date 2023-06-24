@@ -28,9 +28,8 @@ public class UserMapperTest {
     @Test
     void testSelectOneById() {
         try (var sqlSession = sqlSessionFactory.openSession()) {
-            Object instance = sqlSession.selectOne("com.crecema.my.java.mysql.mybatis.mapper.UserMapper.selectOneById", 10000000);
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
-            User user = userMapper.selectOne(10000000);
+            User user = userMapper.selectOneById(1L);
             System.out.println(user);
         }
     }
