@@ -1,5 +1,6 @@
 package com.crecema.my.java.redis.jedis;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import redis.clients.jedis.JedisPooled;
@@ -9,8 +10,13 @@ public class JedisTest {
     private static JedisPooled jedis;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         jedis = new JedisPooled("localhost", 6379);
+    }
+
+    @AfterAll
+    static void close() {
+        jedis.close();
     }
 
     @Test
