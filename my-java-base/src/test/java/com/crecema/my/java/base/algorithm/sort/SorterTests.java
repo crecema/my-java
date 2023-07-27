@@ -35,8 +35,23 @@ public class SorterTests {
     }
 
     @Test
+    public void testMergeSorter2() {
+        runSort(new MergeSorter2());
+    }
+
+    @Test
     public void testQuickSorter() {
         runSort(new QuickSorter());
+    }
+
+    @Test
+    public void testHeapSorter() {
+        runSort(new HeapSorter());
+    }
+
+    @Test
+    public void testHeapSorter2() {
+        runSort(new HeapSorter2());
     }
 
     @Test

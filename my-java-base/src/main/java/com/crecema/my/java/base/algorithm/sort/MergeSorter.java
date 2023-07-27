@@ -2,7 +2,7 @@ package com.crecema.my.java.base.algorithm.sort;
 
 public class MergeSorter implements Sorter {
 
-    private int[] temp;
+    protected int[] temp;
 
     @Override
     public void sort(int[] array) {
@@ -26,7 +26,7 @@ public class MergeSorter implements Sorter {
     }
 
     // 合并方法, 将给定区间[left, mid]和[mid + 1, right]的数组合并
-    private void merge(int[] array, int left, int min, int right) {
+    protected void merge(int[] array, int left, int min, int right) {
         System.arraycopy(array, left, temp, left, right - left + 1);
         int l = left, r = min + 1;
         for (int i = left; i <= right; i++) {
