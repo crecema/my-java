@@ -1,26 +1,31 @@
 package com.crecema.my.java.base.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+@Slf4j
 public abstract class JsonUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    static {
+        OBJECT_MAPPER.findAndRegisterModules();
+        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     public static String toJson(Object object) {
         try {
             return OBJECT_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return "";
+            throw new RuntimeException(e);
         }
     }
 
@@ -28,18 +33,24 @@ public abstract class JsonUtils {
         try {
             return OBJECT_MAPPER.readValue(json, tClass);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
-    public static <K, V> Map<K, V> toMap(String json, Class<K> kClass, Class<V> vClass) {
+    public static <T> T toObject(String json, TypeReference<T> typeReference) {
         try {
-            MapType mapType = OBJECT_MAPPER.getTypeFactory().constructMapType(Map.class, kClass, vClass);
+            return OBJECT_MAPPER.readValue(json, typeReference);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <V> Map<String, V> toMap(String json, Class<V> vClass) {
+        try {
+            MapType mapType = OBJECT_MAPPER.getTypeFactory().constructMapType(Map.class, String.class, vClass);
             return OBJECT_MAPPER.readValue(json, mapType);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return new LinkedHashMap<>();
+            throw new RuntimeException(e);
         }
     }
 
@@ -48,8 +59,7 @@ public abstract class JsonUtils {
             CollectionType collectionType = OBJECT_MAPPER.getTypeFactory().constructCollectionType(List.class, eClass);
             return OBJECT_MAPPER.readValue(json, collectionType);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+            throw new RuntimeException(e);
         }
     }
 
@@ -59,8 +69,7 @@ public abstract class JsonUtils {
             ArrayType arrayType = OBJECT_MAPPER.getTypeFactory().constructArrayType(eClass);
             return OBJECT_MAPPER.readValue(json, arrayType);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return (E[]) new Object[0] ;
+            throw new RuntimeException(e);
         }
     }
 
